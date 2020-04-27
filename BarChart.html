@@ -9,21 +9,27 @@
 <body>
 
     <h1>Tidsresor med enter()</h1>
-    
+    <div id="chart"></div>
     <script>
+        var chartDiv = document.getElementById("chart");
+        var canvas = d3.select(chartDiv).append("svg")
 
+
+        // Funktion för responsiva grafstorleken på resize
+        function redraw() {
         // Höjden på våra rektanglar i barcharten
         var dataTable = [30,50,70,80];
-        var width = 400;
-        var height = 200;
+        var width = window.innerWidth * 0.8;
+        var height = window.innerHeight * 0.3;
         var barWidth = 40;
+        var barMargin = 30; // mellanrum mellan våra staplar     
 
         //Skapa ett ritunderlag
-        var canvas = d3.select("body")
-            .append("svg")
+        canvas
+            .classed("testBar", true)
             .attr("width", width)
             .attr("height", height)
-            .style("background", "lightgrey");
+            .style("background", "lightgrey");     
         
         // Här börjar tidsresan
         canvas.selectAll("staplar")
@@ -33,9 +39,16 @@
                 .append("rect")
                 .attr("width", barWidth)
                 .attr("height", function(data) {return data;})
-                .attr("x", function(data, i) {return 100 * i; }) // förskjuter rektanglarna med 100px (gånger 1, 2...)
+                .attr("x", function(data, i) {return (barWidth + barMargin) * i; }) // förskjuter rektanglarna med 100px (gånger 1, 2...)
                 .attr("y", function(data, i) {return height - data}); // vi måste få att y-positionen börjar från bottnet av stapeln
 
+        }
+
+        // Initialiserar första gången grafen
+        redraw();
+        
+        // Event-listener för en responsiv graf efter resize
+        window.addEventListener("resize", redraw);
     </script>
       
     
