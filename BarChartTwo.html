@@ -5,37 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Min första visualisering med D3.js</title>
     <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="barChart.js"></script>
 </head>
 <body>
 
     <h1>Tidsresor med enter()</h1>
-    
-    <script>
-
-        // Höjden på våra rektanglar i barcharten
-        var dataTable = [70,110,150,200];
-        var width = 400;
-        var height = 400;
-        var barWidth = 40;
-
-        //Skapa ett ritunderlag
-        var canvas = d3.select("body")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .style("background", "lightgrey");
-        
-        // Här börjar tidsresan
-        canvas.selectAll("staplar")
-            .data(dataTable) // Fyll virtuella staplar med data från arrayn (dataTable)
-            
-            .enter() // Gå in i varje virtuella stapel
-                .append("rect")
-                .attr("width", function(data) {return data; })
-                .attr("height", function(data) {return barWidth;})
-                .attr("y", function(data, i) {return 100 * i; }); // här listar vi staplarna vertikalt istället för horisontalt (y)
-
-    </script>
+    <p>Nu med externt script</p>
       
     
 </body>
