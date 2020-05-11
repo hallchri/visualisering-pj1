@@ -38,7 +38,8 @@ function drawChart() {
     // Skapa ordinal scale
     var xScale = d3.scaleBand()
         .domain(months)
-        .range([0, width]);
+        .range([0, width])
+        .padding(0.2);
 
     // Temperaturen - 20 kan inte användas som Y axel, -20 är ju utanför canvas
     // Vi behöver en skala, för temperatur passar en lineär skala
@@ -57,6 +58,17 @@ function drawChart() {
         .attr('fill', 'none')
         .attr('stroke', 'blue')
         .attr('d', dString(dataFix));
+
+    var dotsGroup = canvas.append('g');
+
+    // rita våra cirklar vid månaderna
+    dotsGroup.selectAll('dots').data(dataFix)
+        .enter()
+        .append('circle')
+        .attr('cx', function(d) { return xScale(d.month)}) // använd våra skalor för att x och y ska hitta sina rätta platser
+        .attr('cy', function(d) { return yScale(d.temp)})
+        .attr('r', '4')
+        .attr('fill', 'red');
     
     });
 }

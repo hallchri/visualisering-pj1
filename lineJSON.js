@@ -29,15 +29,26 @@ function drawChart() {
         .attr('height', height);
 
         // d3.line() är en generator som genererar en sträng för d="M x y ...
-    var path = d3.line()
-        .x( function(data) { return data.x * 6 } )
-        .y( function(data) { return data.y * 6 } );
+    var path = d3.line()                                               
+        .x( function(d) { return d.x * 6 } )
+        .y( function(d) { return d.y * 6 } );
     // DEBUG: console.log(path(dataArray));
-    
     
     canvas.append('path') // rita en linje (obs path inte svg line)
         .attr('fill','none')
         .attr('stroke','blue')
         .attr('d', path(dataArray)); // <path id="lineAB" d="M 100 350 l 150 -300" stroke="red" fill="none" />
+
+    // gruppera våra cirklar får att göra de mer praktiskt å flexibelt
+    var dotsGroup = canvas.append('g');
+
+    dotsGroup.selectAll('dots').data(dataArray)
+        .enter()
+        .append('circle')
+        .attr('cx', function(d) { return d.x * 6})
+        .attr('cy', function(d) { return d.y * 6 })
+        .attr('r', '4')
+        .attr('fill', 'red');
+    
     });
 }
