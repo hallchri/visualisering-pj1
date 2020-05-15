@@ -18,48 +18,65 @@ for(var i = 0; i < iData.length; i+=4) {
     // OBS! Jag/Vi skiter i alpha-kanalen, obviously
 }
 
-console.log(rData);
-console.log(gData);
-console.log(bData);
-
-console.log(iData);
-
 drawHistogram({rData, bData, gData});
 
-    function drawHistogram(d) {
+    function drawHistogram(data) {
 
-        var dataFixed = [];
-        var width = 800, height = 600, margin = 40;
-        //var svg = d3.select('svg');
-
-        width -= margin;
-        height -= margin;
+        var width = 800, height = 400, margin = 40;
+        var chartWidth = width-margin*2, chartHeight = height-margin*2
+        
+        d3.select('svg').remove('staplar');
 
         // skapa ritunderlag
-
         var canvas = d3.select('body')
             .append('svg')
             .attr('width', width)
-            .attr('height', height)
-            .style('background','cyan');
+            .attr('height', height);
 
-        //canvas.selectAll('staplar')
-
-        var rDataFixed = Object.keys(d.rData).map(function(key){ return {freq:d.rData[key], idx:+key}});
-        var gDataFixed = Object.keys(d.gData).map(function(key){ return {freq:d.gData[key], idx:+key}});
-        var bDataFixed = Object.keys(d.bData).map(function(key){ return {freq:d.bData[key], idx:+key}});
-        dataFixed.push(rDataFixed, gDataFixed,bDataFixed);
-        console.log(dataFixed);
+        function sortColor(data, color) {
+            //var data = Object.keys(data.rData).map(function(key){ return {freq:data.rData[key] + data.gData[key] + data.bData[key], idx:+key}});
+            var data = Object.keys(data).map(function(key){ return {frekvens:data[key], cValue:+key}});
+        
+            //var data = Object.keys(dataFixed).map(function(key){ return {freq:dataFixed[key], idx:+key}});
+            console.log(data);
 
 
-        // färgskalan
-        var xScale = d3.scaleLinear()
-            .domain([0, d3.max(dataFixed, function(d) { return d.idx; })])
-            .range([0, width]);
+        //var data = Object.keys(d).map(function(key){ return {freq:d[key], idx:+key}});
+        //console.log(data);
 
-        var yScale = d3.scaleLinear()
-            .domain([0, d3.max(dataFixed, function(d) { return d.freq; })])
-            .range([height, 0]);
+            // färgskalan
+            var xScale = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return d.cValue; })])
+                .range([0, chartWidth]);
+
+            var yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return d.frekvens; })])
+                .range([chartHeight, 0]);
+
+            var yAxis = d3.axisLeft(yScale);
+            var xAxis = d3.axisBottom(xScale).ticks(4, "s");
+
+            var chartGroup = canvas.append('g').attr("transform","translate("+ margin +","+ margin +")");
+
+            //console.log(dataFixed[i].freq);
+
+            chartGroup.selectAll('staplar').data(data)
+                .enter()
+                .append('rect')
+                .attr("class", "stapel"+color)
+                .attr("fill", color)
+                .attr("x", function(d) { return xScale(d.cValue); })
+                .attr("y", function(d) { return yScale(d.frekvens); })
+                .attr("width", 2)
+                .attr("opacity", 0.7)
+                .attr("height", function(d) { return chartHeight - yScale(d.frekvens); });
+
+            chartGroup.append('g').call(yAxis);
+            chartGroup.append('g').call(xAxis).attr("transform","translate(0,"+ chartHeight +")");
+        }
+        sortColor(data.rData, "red");
+        sortColor(data.gData, "green");
+        sortColor(data.bData, "blue");
     }
 
 };
