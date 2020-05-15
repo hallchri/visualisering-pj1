@@ -28,7 +28,7 @@ function drawChart() {
         console.log(temps);
 
     // skapa ritunderlag
-    var width = 800, height = 500;
+    var width = 800, height = 500, margin = 20;
 
     var canvas = d3.select('body')
         .append('svg')
@@ -38,37 +38,48 @@ function drawChart() {
     // Skapa ordinal scale
     var xScale = d3.scaleBand()
         .domain(months)
-        .range([0, width])
+        .range([0, width-margin*2])
         .padding(0.2);
 
     // Temperaturen - 20 kan inte användas som Y axel, -20 är ju utanför canvas
     // Vi behöver en skala, för temperatur passar en lineär skala
     var yScale = d3.scaleLinear()
         .domain([d3.min(temps), d3.max(temps)]) // vilka värden (ska konverteras till pixelvärden)
-        .range([height, 0]); // skala över vilken pixelstorlek
+        .range([height-margin*2, 0]); // skala över vilken pixelstorlek
 
     // generera d-strängen för path
     var dString = d3.line()
         .x(function(d) { return xScale(d.month) })
         .y(function(d) { return yScale(d.temp) });
         //console.log(dString(data)); debug, kolla på d attributet
+    
+        // yAxel för temperaturer
+    var yAxis = d3.axisLeft(yScale);
+
+        // xAxel för månader
+    var xAxis = d3.axisBottom(xScale);
         
+    // skapa en grupp som container för grafen
+    var chartGroup = canvas.append('g').attr("transform","translate("+ margin +","+ margin +")");
+
     // rita linjen
     canvas.append('path')
         .attr('fill', 'none')
         .attr('stroke', 'blue')
         .attr('d', dString(dataFix));
 
-    var dotsGroup = canvas.append('g');
-
     // rita våra cirklar vid månaderna
-    dotsGroup.selectAll('dots').data(dataFix)
+    chartGroup.selectAll('dots').data(dataFix)
         .enter()
         .append('circle')
         .attr('cx', function(d) { return xScale(d.month)}) // använd våra skalor för att x och y ska hitta sina rätta platser
         .attr('cy', function(d) { return yScale(d.temp)})
         .attr('r', '4')
         .attr('fill', 'red');
+    
+    // Rita axlar genom att .call på dom
+    chartGroup.append('g').call(yAxis);
+    chartGroup.append('g').call(xAxis);
     
     });
 }
