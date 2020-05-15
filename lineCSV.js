@@ -29,6 +29,7 @@ function drawChart() {
 
     // skapa ritunderlag
     var width = 800, height = 500, margin = 20;
+    var chartWidth = width-margin*2, chartHeight = height-margin*2
 
     var canvas = d3.select('body')
         .append('svg')
@@ -38,14 +39,14 @@ function drawChart() {
     // Skapa ordinal scale
     var xScale = d3.scaleBand()
         .domain(months)
-        .range([0, width-margin*2])
+        .range([0, chartWidth])
         .padding(0.2);
 
     // Temperaturen - 20 kan inte användas som Y axel, -20 är ju utanför canvas
     // Vi behöver en skala, för temperatur passar en lineär skala
     var yScale = d3.scaleLinear()
         .domain([d3.min(temps), d3.max(temps)]) // vilka värden (ska konverteras till pixelvärden)
-        .range([height-margin*2, 0]); // skala över vilken pixelstorlek
+        .range([chartHeight, 0]); // skala över vilken pixelstorlek
 
     // generera d-strängen för path
     var dString = d3.line()
@@ -63,10 +64,11 @@ function drawChart() {
     var chartGroup = canvas.append('g').attr("transform","translate("+ margin +","+ margin +")");
 
     // rita linjen
-    canvas.append('path')
+    chartGroup.append('path')
         .attr('fill', 'none')
         .attr('stroke', 'blue')
-        .attr('d', dString(dataFix));
+        .attr('d', dString(dataFix))
+        .attr("transform","translate("+ chartWidth/months.length/2 +",0)");;
 
     // rita våra cirklar vid månaderna
     chartGroup.selectAll('dots').data(dataFix)
@@ -75,11 +77,12 @@ function drawChart() {
         .attr('cx', function(d) { return xScale(d.month)}) // använd våra skalor för att x och y ska hitta sina rätta platser
         .attr('cy', function(d) { return yScale(d.temp)})
         .attr('r', '4')
-        .attr('fill', 'red');
+        .attr('fill', 'red')
+        .attr("transform","translate("+ chartWidth/months.length/2 +",0)");
     
     // Rita axlar genom att .call på dom
     chartGroup.append('g').call(yAxis);
-    chartGroup.append('g').call(xAxis);
+    chartGroup.append('g').call(xAxis).attr("transform","translate(0,"+ chartHeight +")");
     
     });
 }
