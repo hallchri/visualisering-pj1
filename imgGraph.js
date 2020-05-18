@@ -1,5 +1,5 @@
+var isDrawn = false;
 function drawChart() {
-
     // definiera våra variabler vi skickar in
 var iData = getImage(); //console.log(iData);
 var rData = {}, gData = {}, bData = {};
@@ -18,6 +18,11 @@ for(var i = 0; i < iData.length; i+=4) {
     // OBS! Jag/Vi skiter i alpha-kanalen, obviously
 }
 
+if(isDrawn) {
+    d3.selectAll('g.chartGroup').remove(); 
+    isDrawn = false;
+}
+
 drawHistogram({rData, bData, gData});
 
     function drawHistogram(data) {
@@ -32,7 +37,7 @@ drawHistogram({rData, bData, gData});
             .append('svg')
             .attr('width', width)
             .attr('height', height);
-
+        
         function sortColor(data, color) {
             //var data = Object.keys(data.rData).map(function(key){ return {freq:data.rData[key] + data.gData[key] + data.bData[key], idx:+key}});
             var data = Object.keys(data).map(function(key){ return {frekvens:data[key], cValue:+key}});
@@ -53,13 +58,15 @@ drawHistogram({rData, bData, gData});
                 .domain([0, d3.max(data, function(d) { return d.frekvens; })])
                 .range([chartHeight, 0]);
 
+            // vi skapar våra axlar
             var yAxis = d3.axisLeft(yScale);
-            var xAxis = d3.axisBottom(xScale).ticks(4, "s");
-
-            var chartGroup = canvas.append('g').attr("transform","translate("+ margin +","+ margin +")");
+            var xAxis = d3.axisBottom(xScale).ticks(5, "s");
+            
+            var chartGroup = canvas.append('g')
+                .attr("transform","translate("+ margin*2 +","+ margin +")")
+                .attr('class', 'chartGroup');
 
             //console.log(dataFixed[i].freq);
-
             chartGroup.selectAll('staplar').data(data)
                 .enter()
                 .append('rect')
@@ -71,8 +78,14 @@ drawHistogram({rData, bData, gData});
                 .attr("opacity", 0.7)
                 .attr("height", function(d) { return chartHeight - yScale(d.frekvens); });
 
-            chartGroup.append('g').call(yAxis);
+                // vi vill inte att y-axeln ritas om flera gånger per bilduppladdning, vi vill uppdatera den och ta bort den äldre
+            if(!isDrawn) {
+                chartGroup.append('g').call(yAxis).attr('class','y-axis');
+                isDrawn = true;
+            }
+
             chartGroup.append('g').call(xAxis).attr("transform","translate(0,"+ chartHeight +")");
+
         }
         sortColor(data.rData, "red");
         sortColor(data.gData, "green");
