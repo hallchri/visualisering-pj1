@@ -28,7 +28,7 @@ drawHistogram({rData, bData, gData});
     function drawHistogram(data) {
 
         var width = 800, height = 400, margin = 40;
-        var chartWidth = width-margin*2, chartHeight = height-margin*2
+        var chartWidth = width-(margin*2), chartHeight = height-(margin*2);
         
         d3.select('svg').remove('staplar');
 
@@ -60,23 +60,23 @@ drawHistogram({rData, bData, gData});
 
             // vi skapar våra axlar
             var yAxis = d3.axisLeft(yScale);
-            var xAxis = d3.axisBottom(xScale).ticks(5, "s");
+            var xAxis = d3.axisBottom(xScale).ticks(5, 's');
             
             var chartGroup = canvas.append('g')
-                .attr("transform","translate("+ margin*2 +","+ margin +")")
+                .attr('transform','translate(' + margin*2 + ', '+ margin +')')
                 .attr('class', 'chartGroup');
 
             //console.log(dataFixed[i].freq);
             chartGroup.selectAll('staplar').data(data)
                 .enter()
                 .append('rect')
-                .attr("class", "stapel"+color)
-                .attr("fill", color)
-                .attr("x", function(d) { return xScale(d.cValue); })
-                .attr("y", function(d) { return yScale(d.frekvens); })
-                .attr("width", 2)
-                .attr("opacity", 0.7)
-                .attr("height", function(d) { return chartHeight - yScale(d.frekvens); });
+                .attr('class', 'stapel'+color)
+                .attr('fill', color)
+                .attr('x', function(d) { return xScale(d.cValue); })
+                .attr('y', function(d) { return yScale(d.frekvens); })
+                .attr('width', 2)
+                .attr('opacity', 0.7)
+                .attr('height', function(d) { return chartHeight - yScale(d.frekvens); });
 
                 // vi vill inte att y-axeln ritas om flera gånger per bilduppladdning, vi vill uppdatera den och ta bort den äldre
             if(!isDrawn) {
@@ -84,12 +84,12 @@ drawHistogram({rData, bData, gData});
                 isDrawn = true;
             }
 
-            chartGroup.append('g').call(xAxis).attr("transform","translate(0,"+ chartHeight +")");
+            chartGroup.append('g').call(xAxis).attr('transform','translate(0,'+ chartHeight +')');
 
         }
-        sortColor(data.rData, "red");
-        sortColor(data.gData, "green");
-        sortColor(data.bData, "blue");
+        sortColor(data.rData, 'red');
+        sortColor(data.gData, 'green');
+        sortColor(data.bData, 'blue');
     }
 
 };
