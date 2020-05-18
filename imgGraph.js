@@ -27,7 +27,7 @@ drawHistogram({rData, bData, gData});
 
     function drawHistogram(data) {
 
-        var width = 800, height = 400, margin = 40;
+        var width = 800, height = 600, margin = 40;
         var chartWidth = width-(margin*2), chartHeight = height-(margin*2);
         
         d3.select('svg').remove('staplar');
@@ -63,7 +63,7 @@ drawHistogram({rData, bData, gData});
             var xAxis = d3.axisBottom(xScale).ticks(5, 's');
             
             var chartGroup = canvas.append('g')
-                .attr('transform','translate(' + margin*2 + ', '+ margin +')')
+                .attr('transform','translate(' + margin*2 + ',' + margin +')')
                 .attr('class', 'chartGroup');
 
             //console.log(dataFixed[i].freq);
@@ -80,7 +80,8 @@ drawHistogram({rData, bData, gData});
 
                 // vi vill inte att y-axeln ritas om flera gånger per bilduppladdning, vi vill uppdatera den och ta bort den äldre
             if(!isDrawn) {
-                chartGroup.append('g').call(yAxis).attr('class','y-axis');
+                chartGroup.append('g').call(yAxis)
+                    .attr('class','y-axis');
                 isDrawn = true;
             }
 

@@ -6,6 +6,7 @@ var canvas = document.getElementById('canvas');
            
             var img = document.getElementById('input'); // skapar en htmlimage variabel
             canvas.height = img.height; // set canvas to image height
+            canvas.width = img.width;
             context.drawImage(img,0,0); // rita bilden till vår canvas "context"
             var imageData = context.getImageData(0,0, img.width, img.height).data;
             //console.log(imageData);
@@ -31,6 +32,7 @@ var canvas = document.getElementById('canvas');
                 //console.log(img);
                 img.onload = function () {
                     canvas.height = img.height; // set canvas to image height
+                    canvas.width = img.width;
                     context.drawImage(img,0,0); // rita bilden till vår canvas "context"
                     var imageData = context.getImageData(0,0, img.width, img.height).data;
                     //console.log(imageData);
