@@ -1,7 +1,7 @@
 function drawForce() {
     d3.json('nodes.json', function(jsonData) {
 
-        var width = 400, height = 400;
+        var width = 500, height = 400;
 
         var  gravityCenterX = width/2, gravityCenterY = height/2;
 
@@ -9,7 +9,10 @@ function drawForce() {
             .attr('width', width)
             .attr('height', height);
 
-        
+        // skapa länkar (lines) - streck mellan noderna
+        var link = canvas.append('g').selectAll('lines').data(jsonData.links)
+            .enter().append('line')
+            .attr('stroke', 'green');
 
         // skapa noder (cirklar) med namn
         var node = canvas.append('g').selectAll('nodes').data(jsonData.nodes)
@@ -30,16 +33,23 @@ function drawForce() {
             .attr('y', 100)
             .text(function(data) { return data.name});
 
+
         // definiera en kraft (gravity)
         var simulation = d3.forceSimulation()
+            // länkarna behöver en ny typ av kraft (enligt önskad längd)
+            .force('link', d3.forceLink().distance(60).id( function(d) { return d.id }) )
             // manybody simulerar gravity (pull together) eller electrostatic charge (repulsion)
-            .force("charge", d3.forceManyBody().strength(-30) )
+            .force("charge", d3.forceManyBody().strength(-200) )
             //centreringskraften skuffar alla noder mot mitten
-            .force("center", d3.forceCenter(gravityCenterX, gravityCenterY) )
+            .force("center", d3.forceCenter(gravityCenterX, gravityCenterY) );
 
         // vi måste starta vår simulation och köra den on("tick")
         simulation.nodes(jsonData.nodes).on("tick", tickHandler);
 
+
+        // simulera även länkarnas krafter
+        simulation.force('link').links(jsonData.links);
+        
         //vad ska göras varje tick när vi animerar?
         function tickHandler() {
             // x och y för ellipserna ska ändra i och med kraften
@@ -50,6 +60,13 @@ function drawForce() {
             labels
                 .attr('x', function(data) { return data.x })
                 .attr('y', function(data) { return data.y + 5 })
+
+            link
+                .attr('x1', function(data) { return data.source.x })
+                .attr('x2', function(data) { return data.target.x })
+                .attr('y1', function(data) { return data.source.y })
+                .attr('y2', function(data) { return data.target.y });
+        
         };
 
         function overHandler() {
