@@ -54,6 +54,7 @@ drawHistogram({rData, bData, gData});
                 .domain([0, d3.max(data, function(d) { return d.cValue; })])
                 .range([0, chartWidth]);
 
+            // frekvens
             var yScale = d3.scaleLinear()
                 .domain([0, d3.max(data, function(d) { return d.frekvens; })])
                 .range([chartHeight, 0]);
@@ -66,16 +67,22 @@ drawHistogram({rData, bData, gData});
                 .attr('transform','translate(' + margin*2 + ',' + margin +')')
                 .attr('class', 'chartGroup');
 
-            //console.log(dataFixed[i].freq);
+            // rita ut våra virtuella staplar + animering som extra
             chartGroup.selectAll('staplar').data(data)
                 .enter()
                 .append('rect')
                 .attr('class', 'stapel'+color)
                 .attr('fill', color)
+                // animering start
+                .transition()
+                .attr('y', function(d) { return yScale(d.frekvens)})
+                .attr('height', function(d) { return chartHeight - yScale(d.frekvens)})
+                .delay(function(d,i){ return(i*5)})
+                // animering slut
                 .attr('x', function(d) { return xScale(d.cValue); })
                 .attr('y', function(d) { return yScale(d.frekvens); })
                 .attr('width', 2)
-                .attr('opacity', 0.7)
+                .attr('opacity', 0.33)
                 .attr('height', function(d) { return chartHeight - yScale(d.frekvens); });
 
                 // vi vill inte att y-axeln ritas om flera gånger per bilduppladdning, vi vill uppdatera den och ta bort den äldre
@@ -84,7 +91,7 @@ drawHistogram({rData, bData, gData});
                     .attr('class','y-axis');
                 isDrawn = true;
             }
-
+                
             chartGroup.append('g').call(xAxis).attr('transform','translate(0,'+ chartHeight +')');
 
         }
