@@ -1,6 +1,14 @@
 function drawBoxPlot() {
      // läs in extern json data (d3v5)
     d3.json('boxPlot.json').then(function(jsonData) {
+
+        $.get("https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD,JPY,EUR ",function(data, status)
+        {     
+            //variabeln data innehåller här JSON-filen som returneras från webbtjänsten
+            var juData = data;
+            console.log(juData);
+            console.log(status);
+        });
     
         var width = 600, height = 150, margin = 30;
         var chartWidth = width - (margin*2);
