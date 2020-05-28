@@ -87,7 +87,7 @@ function drawChart() {
             .range([chartHeight, 0]);
         
         var yAxis = d3.axisRight(yScale)
-        .ticks(medianV.length-1)
+        .ticks(20)
         .tickPadding(20);
 
         var canvas = d3.select('body').append('svg')
