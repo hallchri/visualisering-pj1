@@ -57,7 +57,7 @@ function drawChart() {
         var uQ = medianV[ Math.floor(medianV.length *0.75)];
         var min = d3.min(medianV);
         var max = d3.max(medianV);
-        //var uQ = ( Math.round((cryptoValues.length *0.75) * 100) / 100 );
+        
         console.log(median);
         console.log("lQ " + lQ);
         console.log("uQ " + uQ);

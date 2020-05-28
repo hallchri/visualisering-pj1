@@ -39,15 +39,10 @@ drawHistogram({rData, bData, gData});
             .attr('height', height);
         
         function sortColor(data, color) {
-            //var data = Object.keys(data.rData).map(function(key){ return {freq:data.rData[key] + data.gData[key] + data.bData[key], idx:+key}});
+            // mappa vår data 
             var data = Object.keys(data).map(function(key){ return {frekvens:data[key], cValue:+key}});
-        
-            //var data = Object.keys(dataFixed).map(function(key){ return {freq:dataFixed[key], idx:+key}});
             console.log(data);
 
-
-        //var data = Object.keys(d).map(function(key){ return {freq:d[key], idx:+key}});
-        //console.log(data);
 
             // färgskalan
             var xScale = d3.scaleLinear()
@@ -95,6 +90,7 @@ drawHistogram({rData, bData, gData});
             chartGroup.append('g').call(xAxis).attr('transform','translate(0,'+ chartHeight +')');
 
         }
+        // skicka in vår data och ge staplarna deras färg enligt datan
         sortColor(data.rData, 'red');
         sortColor(data.gData, 'green');
         sortColor(data.bData, 'blue');
